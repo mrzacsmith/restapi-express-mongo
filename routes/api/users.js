@@ -3,7 +3,10 @@ import User from '../../models/Users.js'
 const router = Router()
 
 router.get('/', (req, res) => {
-  User.find({}, (err, users) => {
+  User.find({}, (error, users) => {
+    if (error) {
+      res.status(500).send({ error })
+    }
     return res.send(users)
   })
 })
