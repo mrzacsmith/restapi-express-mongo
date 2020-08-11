@@ -4,6 +4,7 @@ import mongoose from '../database/mongodb.js'
 
 const userSchema = new Schema({
   username: { type: String, required: true, index: { unique: true } },
+  password: { type: String, require: true },
 })
 
 const upatePassword = (user, next) => {
@@ -26,6 +27,8 @@ userSchema.pre('save', () => {
 userSchema.methods.comparePassword = (password, next) => {
   bcrypt.compare(password, this.password, (err, isMatch) => {
     if (error) return next(error)
+
+    return next(null, isMatch)
   })
 }
 

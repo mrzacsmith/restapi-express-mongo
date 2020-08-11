@@ -12,13 +12,18 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res, next) => {
-  const { username } = req.body
-  if (!username) {
-    return res.status(400).send({ error: 'Request fields not found: username' })
+  const { username, password } = req.body
+  if (!username || !password) {
+    return res.status(400).send({
+      error: `Required Fields not found: ${!username ? 'username' : ''} ${
+        !password ? 'password' : ''
+      }`,
+    })
   }
 
   const newUser = new User({
     username: username,
+    password: password,
   })
   newUser.save((error, model) => {
     if (error) {
