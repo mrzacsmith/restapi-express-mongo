@@ -11,7 +11,29 @@ router.get('/', (req, res) => {
   })
 })
 
-router.post('/', (req, res, next) => {
+router.post('/password', (req, res) => {
+  const { username, password } = req.body
+  if (!username || !password) {
+    return res.status(400).send({
+      error: `Required Fields not found: ${!username ? 'username' : ''} ${
+        !password ? 'password' : ''
+      }`,
+    })
+  }
+  User.findOne({ username: username }, function (err, userModel) {
+    if (err) return res.status(400).send(err)
+
+    if (!User) return res.status(400).send({ err: 'Cannot find user' })
+
+    return userModel.comparePassword(password, function (err, isMatch) {
+      if (err) return res.status(400).send(err)
+
+      return res.send({ correct: isMatch })
+    })
+  })
+})
+
+router.post('/', (req, res) => {
   const { username, password } = req.body
   if (!username || !password) {
     return res.status(400).send({
